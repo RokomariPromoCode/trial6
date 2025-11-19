@@ -1,0 +1,78 @@
+<!-- Footer include -->
+<footer id="footer" class="main-footer">
+  <div class="footer-container container">
+
+    <div class="footer-request-area" id="request-area">
+      <h2>কাঙ্খিত বই বা প্রমো কোড <span>খুঁজে পাচ্ছেন না?</span></h2>
+      <form action="https://formspree.io/f/YOUR_FORM_ID_HERE" method="POST" class="footer-form">
+        <div class="f-group">
+          <label>আপনার নাম</label>
+          <input type="text" name="name" placeholder="নাম লিখুন" required>
+        </div>
+        <div class="f-group">
+          <label>যোগাযোগ</label>
+          <input type="text" name="contact" placeholder="মোবাইল/ইমেইল" required>
+        </div>
+        <div class="f-group">
+          <label>প্রোডাক্টের নাম</label>
+          <input type="text" name="product-name" id="product-name" placeholder="বই বা পণ্যের নাম" required>
+        </div>
+        <button type="submit" class="f-btn">রিকোয়েস্ট পাঠান <i class="fas fa-paper-plane"></i></button>
+      </form>
+    </div>
+
+    <div class="footer-content">
+      <div class="footer-col footer-about">
+        <h3>About Us</h3>
+        <img src="{{ '/assets/logo.png' | relative_url }}" alt="Logo" style="margin-bottom:15px;border-radius:5px;">
+        <p>আমরা রকমারি ডট কমের অ্যাফিলিয়েট পার্টনার। পাঠকদের জন্য সেরা বই এবং সর্বোচ্চ ডিসকাউন্ট নিশ্চিত করাই লক্ষ্য।</p>
+        <div class="social-links">
+          <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+          <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+          <a href="#" class="social-icon"><i class="fab fa-youtube"></i></a>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h3>Top Categories</h3>
+        <ul class="footer-links">
+          <li><a href="{{ '/books.html' | relative_url }}"><i class="fas fa-book"></i> Fiction Books</a></li>
+          <li><a href="{{ '/books.html' | relative_url }}"><i class="fas fa-book-open"></i> Non-Fiction</a></li>
+          <li><a href="{{ '/books.html' | relative_url }}"><i class="fas fa-graduation-cap"></i> Academic</a></li>
+          <li><a href="{{ '/electronics.html' | relative_url }}"><i class="fas fa-laptop"></i> Electronics Gadgets</a></li>
+          <li><a href="{{ '/ghorer_bazar.html' | relative_url }}"><i class="fas fa-home"></i> Ghorer Bazar</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h3>Quick Links</h3>
+        <ul class="footer-links">
+          <li><a href="{{ '/' | relative_url }}"><i class="fas fa-chevron-right"></i> Home</a></li>
+          <li><a href="#trending"><i class="fas fa-chevron-right"></i> Trending Offers</a></li>
+          <li><a href="#how-to"><i class="fas fa-chevron-right"></i> How to Use Code</a></li>
+          <li><a href="{{ '/groceries.html' | relative_url }}"><i class="fas fa-chevron-right"></i> Daily Groceries</a></li>
+          <li><a href="#"><i class="fas fa-chevron-right"></i> Privacy Policy</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h3>Contact Info</h3>
+        <ul class="footer-links">
+          <li><a href="#"><i class="fas fa-map-marker-alt"></i> Dhaka, Bangladesh</a></li>
+          <li><a href="mailto:support@mysite.com"><i class="fas fa-envelope"></i> support@mysite.com</a></li>
+          <li><a href="tel:+880123456789"><i class="fas fa-phone-alt"></i> +880 1234 567 890</a></li>
+        </ul>
+        <div style="margin-top:20px;padding:10px;background:#2c333e;border-radius:5px;font-size:12px;color:#aaa;">
+          <i class="fas fa-info-circle"></i> Affiliate of Rokomari.com
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <div class="footer-container container">
+      <p>&copy; {{ "now" | date: "%Y" }} <span>YourSiteName</span>. All Rights Reserved.</p>
+    </div>
+  </div>
+</footer>
