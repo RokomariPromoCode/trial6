@@ -1,4 +1,4 @@
-/* assets/app.js - category-aware card loader + lazy batch render + search */
+/* assets/app.js - updated: category-aware + randomized loader + lazy-batch + search */
 (function () {
   'use strict';
 
@@ -8,27 +8,37 @@
   const CARDS_CONTAINER_ID = 'cardsArea';
   const SPINNER_ID = 'spinner';
   const ENDMSG_ID = 'endMessage';
-  const DEFAULT_JSON = (window.SITE_BASE || '') + '/data/default.json'; // fallback
+
+  // Try to derive default JSON path from site base (if set)
+  const SITE_BASE = (window.SITE_BASE && String(window.SITE_BASE).replace(/\/$/, '')) || '';
+  const DEFAULT_JSON = SITE_BASE + '/data/default.json';
 
   // HELPERS
   const qs = (s, p = document) => p.querySelector(s);
   const qsa = (s, p = document) => Array.from((p || document).querySelectorAll(s));
-  const safe = s => s == null ? '' : String(s);
+  const safe = s => (s == null ? '' : String(s));
+  const shuffle = arr => {
+    // Fisher–Yates shuffle (non-destructive copy)
+    const a = arr.slice();
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  };
 
   // App state
   let allData = [];
   let idx = 0;
   let observer = null;
 
-  // Detect data source for this page
+  // Determine JSON url for THIS page
   function getPageDataUrl() {
-    // page author should set data-src on main or body
     const main = qs('main') || qs('body');
     if (main && main.dataset && main.dataset.src) {
-      // If page gives absolute path, use as-is; otherwise attach site base
       return main.dataset.src;
     }
-    // try page-level global variable SITE_DATA
+    // support global SITE_DATA if used
     if (window.SITE_DATA && typeof window.SITE_DATA === 'string') return window.SITE_DATA;
     return DEFAULT_JSON;
   }
@@ -37,9 +47,14 @@
     try {
       const r = await fetch(url, { cache: 'no-store' });
       if (!r.ok) throw new Error('HTTP ' + r.status);
-      return await r.json();
+      const j = await r.json();
+      if (!Array.isArray(j)) {
+        console.warn('JSON is not an array:', url);
+        return [];
+      }
+      return j;
     } catch (e) {
-      console.error('fetchJson', url, e);
+      console.error('fetchJson failed for', url, e);
       return [];
     }
   }
@@ -81,10 +96,11 @@
     const spinner = qs(`#${SPINNER_ID}`);
     spinner && (spinner.hidden = false);
 
-    // small delay for UX
     setTimeout(() => {
       const slice = allData.slice(idx, idx + BATCH_SIZE);
-      slice.forEach(item => container.appendChild(createCard(item)));
+      slice.forEach(item => {
+        container.appendChild(createCard(item));
+      });
       idx += slice.length;
       spinner && (spinner.hidden = true);
 
@@ -95,14 +111,42 @@
           try { observer.unobserve(qs(`#${SENTINEL_ID}`)); } catch (e) { /* ignore */ }
         }
       }
-    }, 100);
+    }, 80);
   }
 
   async function loadAndStart() {
     const dataUrl = getPageDataUrl();
-    allData = await fetchJson(dataUrl);
+    if (!dataUrl) {
+      console.warn('No data URL found for page; set data-src on <main> or window.SITE_DATA');
+      return;
+    }
+
+    // attempt to expand relative (if user provided relative without base)
+    let urlToFetch = dataUrl;
+    if (dataUrl.startsWith('/') && SITE_BASE) {
+      // if dataUrl already absolute path starts with / then OK
+      urlToFetch = (SITE_BASE + dataUrl).replace(/\/{2,}/g, '/');
+    } else if (!dataUrl.startsWith('http') && SITE_BASE && !dataUrl.startsWith('/')) {
+      // relative path — prefix base + '/'
+      urlToFetch = (SITE_BASE + '/' + dataUrl).replace(/\/{2,}/g, '/');
+    }
+
+    console.info('Loading JSON for cards from:', urlToFetch);
+    const json = await fetchJson(urlToFetch);
+    if (!json.length) {
+      // try fallback (site base + default)
+      if (urlToFetch !== DEFAULT_JSON) {
+        console.info('Falling back to default JSON:', DEFAULT_JSON);
+        const fallback = await fetchJson(DEFAULT_JSON);
+        allData = shuffle(fallback);
+      } else {
+        allData = [];
+      }
+    } else {
+      allData = shuffle(json); // RANDOMIZE here
+    }
+
     idx = 0;
-    // clear existing
     const container = qs(`#${CARDS_CONTAINER_ID}`);
     if (container) container.innerHTML = '';
     appendBatch();
@@ -120,7 +164,7 @@
     observer.observe(sentinel);
   }
 
-  // simple client-side search: filters current JSON and rerenders
+  // simple client search (filters current allData)
   function performSearch(q) {
     q = (q || '').trim().toLowerCase();
     const container = qs(`#${CARDS_CONTAINER_ID}`);
@@ -129,11 +173,7 @@
     idx = 0;
     qs(`#${ENDMSG_ID}`) && (qs(`#${ENDMSG_ID}`).hidden = true);
 
-    if (!q) {
-      // show first batch of full data
-      appendBatch();
-      return;
-    }
+    if (!q) { appendBatch(); return; }
     const results = allData.filter(item => {
       const hay = `${safe(item.title)} ${safe(item.desc || '')} ${safe(item.summary || '')}`.toLowerCase();
       return hay.includes(q);
@@ -141,10 +181,9 @@
     results.forEach(item => container.appendChild(createCard(item)));
   }
 
-  // Init
+  // init
   document.addEventListener('DOMContentLoaded', () => {
     loadAndStart();
-    // expose search
     window.performSearch = performSearch;
   });
 
