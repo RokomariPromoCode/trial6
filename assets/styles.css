@@ -52,50 +52,65 @@ body{font-family:'Poppins',sans-serif;background:#f4f4f4;color:#111827;line-heig
 }
 
 /* Footer */
-/* Footer (fixed layout improvements) */
+/* FOOTER: tightened layout, ensure no bottom gap */
+html, body {
+  height: 100%;
+}
+body {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+/* main content area should grow so footer is pushed down */
+main {
+  flex: 1 0 auto;
+}
+
+/* Footer */
 .main-footer {
-  background:#111827;
-  color:#e5e7eb;
-  margin-top:48px;
-  padding-top:0;
-  box-sizing:border-box;
+  background: #0f1724; /* slightly darker for contrast */
+  color: #e6eef8;
+  padding-top: 36px;
+  padding-bottom: 18px;
+  box-sizing: border-box;
+  margin-top: 24px;
 }
 .main-footer::before {
-  content:'';
-  display:block;
-  height:4px;
-  background:linear-gradient(90deg,#1abc9c,#3498db,#9b59b6);
+  content: '';
+  display: block;
+  height: 4px;
+  background: linear-gradient(90deg,#1abc9c,#3498db,#9b59b6);
 }
-.footer-container { max-width:1200px; margin:0 auto; padding:0 20px; box-sizing:border-box; }
 
-/* request area: don't overlap — make it inline with layout */
+/* footer request box should be inline (no negative margin) */
 .footer-request-area {
-  background:#1f2937;
-  padding:28px;
-  border-radius:12px;
-  margin: 20px 0 30px 0; /* remove negative margin */
-  box-shadow:0 8px 20px rgba(0,0,0,0.12);
-  border:1px solid #374151;
+  background: #0f1b27;
+  padding: 28px;
+  border-radius: 12px;
+  margin: 18px 0;
+  border: 1px solid rgba(255,255,255,0.03);
 }
 
-/* grid layout for footer content */
+/* footer content grid */
 .footer-content {
-  padding: 40px 0 24px;
-  display:grid;
+  padding: 28px 0 12px;
+  display: grid;
   grid-template-columns: 1.5fr 1fr 1fr 1fr;
-  gap:24px;
-  align-items:start;
+  gap: 20px;
+  align-items: start;
 }
 
-/* ensure footer-bottom sits after everything */
+/* ensure bottom strip sits flush */
 .footer-bottom {
-  background:#0f1218;
-  padding:18px 0;
-  text-align:center;
-  border-top:1px solid #1f2937;
-  font-size:13px; color:#6b7280;
+  background: #0b1116;
+  padding: 12px 0;
+  text-align: center;
+  font-size: 13px;
+  color: #9aa6b2;
+  border-top: 1px solid rgba(255,255,255,0.02);
+  margin-top: 12px;
 }
-
 
 /* helpers */
 .cards-grid{display:flex;gap:12px;flex-wrap:wrap;margin-top:16px}
