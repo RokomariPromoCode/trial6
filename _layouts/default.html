@@ -11,8 +11,12 @@
 
   <!-- Main CSS (Jekyll-aware) -->
   <link rel="stylesheet" href="{{ '/assets/styles.css' | relative_url }}">
-  <!-- Fallback absolute path for project page (helps while Pages rebuilds) -->
-  <link rel="stylesheet" href="https://rokomaripromocode.github.io/recov1/assets/styles.css">
+  <!-- Immediate fallback while Pages rebuilds -->
+  <link rel="stylesheet" href="https://rokomaripromocode.github.io/trial/assets/styles.css">
+
+  <!-- Logo (use relative_url) -->
+  <link rel="icon" href="{{ '/assets/logo.png' | relative_url }}">
+
 </head>
 <body>
   {% include header.html %}
@@ -27,6 +31,6 @@
   <!-- App script (Jekyll-aware) -->
   <script>window.SITE_BASE = "{{ site.baseurl | relative_url }}";</script>
   <script src="{{ '/assets/app.js' | relative_url }}"></script>
-  <script src="https://rokomaripromocode.github.io/recov1/assets/app.js"></script>
+  <script src="https://rokomaripromocode.github.io/trial/assets/app.js"></script>
 </body>
 </html>
